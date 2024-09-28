@@ -1,11 +1,11 @@
 import React from "react";
 import './App.css';
-import Test from "./components/test.tsx";
+import Header from "./features/header/header.tsx";
 
 function App() {
     return (
         <div>
-            <Test />
+            <Header />
         </div>
     );
 }
