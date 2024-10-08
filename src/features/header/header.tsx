@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { default as SearchBox } from "./searchbox";
-import { default as Navigation } from "./navigation";
+import { Navigation, SearchBox } from "./";
 
 const Header = () => {
     return (

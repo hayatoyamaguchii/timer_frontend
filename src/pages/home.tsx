@@ -1,5 +1,12 @@
+import { Timer, Stopwatch } from "../components/";
+
 const Home = () => {
-    return <h1>home!!!</h1>;
+    return (
+        <div>
+            <Timer />
+            <Stopwatch />
+        </div>
+    );
 };
 
 export default Home;

@@ -14,6 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
             <App />
             <Routes>
+                {/* TODO: 存在しないpathにアクセスした時の挙動や、httpエラーの設定。 */}
                 <Route path="/home" Component={Home} />
                 <Route path="/profile" Component={Profile} />
                 <Route path="/message" Component={Message} />

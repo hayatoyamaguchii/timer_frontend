@@ -19,7 +19,7 @@ const Navigation = () => {
     ];
     for (var i in navData) {
         navList.push(
-            <li>
+            <li key={i}>
                 <NavLink to={navData[i].path} className="group">
                     <div className="m-2 rounded-full group-hover:bg-gray-200">
                         <div className="mx-4 flex h-10 items-center">
