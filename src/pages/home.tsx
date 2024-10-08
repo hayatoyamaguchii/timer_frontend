@@ -1,10 +1,10 @@
-import { default as Timer } from "../components/timer";
+import { Timer, Stopwatch } from "../components/";
 
 const Home = () => {
     return (
         <div>
-            <h1>home!!!</h1>
             <Timer />
+            <Stopwatch />
         </div>
     );
 };
