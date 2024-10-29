@@ -4,7 +4,8 @@ const Home = () => {
     return (
         <div>
             <Timer />
-            <Stopwatch />
+            {/* <Stopwatch /> */}
+            {/* TODO: プルダウンで種類選択することでタイマーやストップウォッチなどを切り替えられるようにする。 */}
         </div>
     );
 };

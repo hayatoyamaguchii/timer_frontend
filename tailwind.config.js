@@ -1,11 +1,13 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}"
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-
+module.exports = {
+    content: ["./src/**/*.{js,jsx,ts,tsx}"],
+    theme: {
+        extend: {
+            fontFamily: {
+                Anton: ["Anton", "Roboto", "sans-serif"],
+                ProtestStrike: ["Protest Strike", "Roboto", "sans-serif"],
+            },
+        },
+    },
+    plugins: [],
+};
