@@ -17,6 +17,7 @@ const Navigation = () => {
         { path: "/profile", icon: <MdPerson />, text: "プロフィール" },
         { path: "/settings", icon: <MdSettings />, text: "設定" },
     ];
+
     for (var i in navData) {
         navList.push(
             <li key={i}>
