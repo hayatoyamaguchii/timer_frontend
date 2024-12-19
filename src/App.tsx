@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     BrowserRouter as Router,
     Route,
@@ -18,7 +18,7 @@ import Settings from "./pages/settings";
 import "./App.css";
 
 const isAuth = (): boolean => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
     if (!token) return false;
 
     // デコードし、有効期限を確認。
@@ -39,9 +39,15 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
 };
 
 const App: React.FC = () => {
+    const [auth, setAuth] = useState<boolean>(false);
+
+    useEffect(() => {
+        setAuth(isAuth());
+    }, []);
+
     return (
         <Router>
-            <Header />
+            {auth && <Header />}
             <Routes>
                 {/* 認証不必要ページ */}
                 <Route path="/register" element={<Register />} />

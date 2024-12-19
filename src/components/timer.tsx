@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "./";
+import { Button, Modal } from "./";
 import { useTimer, useTimerStorage, useTimerDatabase } from "../hooks";
 
-import { MdPlayArrow, MdPause, MdOutlineTimer, MdSave } from "react-icons/md";
-import { IoMdTrash } from "react-icons/io";
+import { MdPlayArrow, MdPause, MdStop } from "react-icons/md";
 import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
 
 const Timer = () => {
@@ -17,6 +16,7 @@ const Timer = () => {
         hour,
         min,
         sec,
+        timerSecRef,
         setHour,
         setMin,
         setSec,
@@ -31,21 +31,35 @@ const Timer = () => {
         formatTime,
         runTimer,
         stopTimer,
-        saveEndTimer,
-        withoutSaveEndTimer,
+        saveAndEndTimer,
+        discardAndEndTimer,
         showInput,
     } = useTimer();
     // const { saveToStorage, loadFromStorage } = useTimerStorage();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // // コンポーネントがマウントされたときにlocalStorageから時間を読み込む
+    // TODO: コンポーネントがマウントされたときにlocalStorageから時間を読み込む。
     // useEffect(() => {
     //     loadFromStorage();
     // }, []);
 
-    // // secondsが変化するたびにlocalStorageに保存
+    // secondsが変化するたびにlocalStorageに保存。
     // useEffect(() => {
     //     saveToStorage();
     // }, []);
+
+    const timerEnd = () => {
+        if (timerSecRef.current) {
+            setIsModalOpen(true);
+        } else {
+            console.log("動作中じゃないよ");
+        }
+    };
+
+    const handleEnd = (action: () => void) => {
+        action();
+        setIsModalOpen(false);
+    };
 
     const renderContent = () => {
         if (showInput) {
@@ -81,6 +95,7 @@ const Timer = () => {
                             placeholder="0"
                             ref={inputHourRef}
                             value={hour}
+                            onChange={(e) => setHour(Number(e.target.value))}
                         ></input>
                         <div className="flex w-5 items-center justify-center">
                             :
@@ -91,6 +106,7 @@ const Timer = () => {
                             placeholder="0"
                             ref={inputMinRef}
                             value={min}
+                            onChange={(e) => setMin(Number(e.target.value))}
                         ></input>
                         <div className="flex w-5 items-center justify-center">
                             :
@@ -101,6 +117,7 @@ const Timer = () => {
                             placeholder="0"
                             ref={inputSecRef}
                             value={sec}
+                            onChange={(e) => setSec(Number(e.target.value))}
                         ></input>
                     </div>
                     <div>
@@ -154,31 +171,58 @@ const Timer = () => {
     };
 
     return (
-        <div className="mx-auto mt-5 max-w-screen-lg border p-5">
-            {renderContent()}
-            <div>
-                <Button size="large" variant="primary" onClick={runTimer}>
-                    <MdPlayArrow />
-                    開始
-                </Button>
-                <Button size="large" variant="primary" onClick={stopTimer}>
-                    <MdPause />
-                    一時停止
-                </Button>
-                <Button size="large" variant="alert" onClick={saveEndTimer}>
-                    <MdSave />
-                    記録/終了
-                </Button>
-                <Button
-                    size="large"
-                    variant="alert"
-                    onClick={withoutSaveEndTimer}
-                >
-                    <IoMdTrash />
-                    破棄/終了
-                </Button>
+        <>
+            <div className="mx-auto mt-5 max-w-screen-lg border p-5">
+                {renderContent()}
+                <div>
+                    <Button
+                        size="large"
+                        variant="primary"
+                        onClick={runTimer}
+                        disabled={timerSecRef.current}
+                    >
+                        <MdPlayArrow />
+                        開始
+                    </Button>
+                    <Button
+                        size="large"
+                        variant="primary"
+                        onClick={stopTimer}
+                        disabled={!timerSecRef.current}
+                    >
+                        <MdPause />
+                        一時停止
+                    </Button>
+                    <Button
+                        size="large"
+                        variant="alert"
+                        onClick={timerEnd}
+                        disabled={!timerSecRef.current}
+                    >
+                        <MdStop />
+                        終了
+                    </Button>
+                </div>
             </div>
-        </div>
+            <Modal
+                isOpen={isModalOpen}
+                message="保存して終了しますか？"
+                buttons={[
+                    {
+                        label: "キャンセル",
+                        onClick: () => setIsModalOpen(false),
+                    },
+                    {
+                        label: "保存して終了",
+                        onClick: () => handleEnd(saveAndEndTimer),
+                    },
+                    {
+                        label: "破棄して終了",
+                        onClick: () => handleEnd(discardAndEndTimer),
+                    },
+                ]}
+            />
+        </>
     );
 };
 
