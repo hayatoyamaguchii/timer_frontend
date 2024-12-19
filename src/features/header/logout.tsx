@@ -1,6 +1,6 @@
 const Logout = () => {
     const handleLogout = () => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("authToken");
 
         window.location.href = "/login";
     };

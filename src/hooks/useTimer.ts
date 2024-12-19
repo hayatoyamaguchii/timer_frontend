@@ -6,6 +6,8 @@ export const useTimer = () => {
     const inputMinRef = useRef<HTMLInputElement>(null);
     const inputSecRef = useRef<HTMLInputElement>(null);
 
+    const timerStartSecRef = useRef<number | null>(null);
+
     // 実際にカウントダウン処理を行うためのuseRef。
     const timerSecRef = useRef<number | null>(null);
 
@@ -71,7 +73,6 @@ export const useTimer = () => {
             newMin = remainder;
         }
 
-        // 最後に新しい時間を返す
         return { hour: newHour, min: newMin, sec: newSec, ms };
     };
 
@@ -129,6 +130,8 @@ export const useTimer = () => {
         setSec(sec);
         totalSec = hour * 3600 + min * 60 + sec;
 
+        timerStartSecRef.current = totalSec;
+
         // inputをhideしてdivをvisibleする
         setShowInput(false);
 
@@ -144,8 +147,7 @@ export const useTimer = () => {
                 setSec(sec);
             } else {
                 clearInterval(timerSecRef.current!);
-                // TODO: DBへの保存機能が実装出来たらここのコメントアウト外す。
-                // saveEndTimer();
+                saveAndEndTimer();
                 timerSecRef.current = null;
             }
         }, 1000);
@@ -154,20 +156,75 @@ export const useTimer = () => {
     const stopTimer = () => {
         if (timerSecRef.current) {
             clearInterval(timerSecRef.current);
-            setShowInput(true);
             timerSecRef.current = null;
             setIsRunningTimer(false);
+            setShowInput(true);
         }
     };
 
-    const saveEndTimer = () => {};
-    // ダイアログ表示(切り出す)実装する。
-    // DBへの保存機能実装する。
-    // Inputを空の状態に戻す。
+    const resetTimer = () => {
+        clearInterval(timerSecRef.current!);
 
-    const withoutSaveEndTimer = () => {};
-    // ダイアログ表示実装する(切り出す)。
-    // Inputを空の状態に戻す。
+        setHour(0);
+        setMin(0);
+        setSec(0);
+
+        setIsRunningTimer(false);
+        setShowInput(true);
+    };
+
+    const saveAndEndTimer = async () => {
+        // DBへの保存機能実装する。
+        // Inputを空の状態に戻す。
+        interface Data {
+            workNameId: number | null;
+            duration: number;
+            createdAt: string;
+        }
+        const data: Data = {
+            workNameId: null,
+            duration: 80,
+            createdAt: new Date().toISOString(),
+        };
+        const token = localStorage.getItem("authToken");
+
+        // TODO: 実際の値を格納するようにする。
+        data.workNameId = 1;
+        data.duration = 80;
+
+        // TODO: ここから下のDB操作は切り出せそう。useDatabase.tsとかで共通化？
+        try {
+            const response = await fetch(
+                "http://localhost:8000/api/timer/save",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(data),
+                },
+            );
+
+            if (!response.ok) {
+                console.log("保存に失敗しました。");
+            }
+
+            const res = await response.json();
+            console.log("保存されました:", res);
+
+            resetTimer();
+        } catch (error) {
+            console.log("エラー:", error);
+            alert(
+                "タイマーの保存に失敗しました。ネットワークを確認してください。",
+            );
+        }
+    };
+
+    const discardAndEndTimer = () => {
+        resetTimer();
+    };
 
     return {
         inputHourRef,
@@ -180,6 +237,7 @@ export const useTimer = () => {
         min,
         sec,
         ms,
+        timerSecRef,
         setHour,
         setMin,
         setSec,
@@ -195,10 +253,8 @@ export const useTimer = () => {
         formatTime,
         runTimer,
         stopTimer,
-        saveEndTimer,
-        withoutSaveEndTimer,
+        saveAndEndTimer,
+        discardAndEndTimer,
         showInput,
     };
 };
-
-export default useTimer;

@@ -1,14 +1,8 @@
-import { useState, useRef } from "react";
-
 export const useTimerDatabase = () => {
-    const saveToDatabase = () => {
-        /* Databaseに保存 */
-    };
-    const loadFromDatabase = () => {
-        /* Databaseから読み取り */
+    const saveToDatabase = (data: any) => {
+        console.log("Saving to database:", data);
+        // APIリクエストやDB処理を記述
     };
 
-    return { saveToDatabase, loadFromDatabase };
+    return { saveToDatabase };
 };
-
-export default useTimerDatabase;

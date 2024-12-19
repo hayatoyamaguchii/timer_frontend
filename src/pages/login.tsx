@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,8 +28,9 @@ const Login = () => {
 
             if (response.ok) {
                 const { token } = data;
-                localStorage.setItem("token", token);
+                localStorage.setItem("authToken", token);
                 setMessage("ログインが完了しました！");
+                navigate("/home");
                 console.log(localStorage);
             } else {
                 setMessage(`ログインに失敗しました: ${data.error}`);
@@ -78,7 +81,7 @@ const Login = () => {
                 </div>
                 <button
                     type="submit"
-                    className="mt-4 w-full rounded-lg bg-blue-500 py-2 font-semibold text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-4 w-full rounded-lg bg-indigo-500 py-2 font-semibold text-white shadow-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                     ログイン
                 </button>
@@ -87,6 +90,12 @@ const Login = () => {
             {message && (
                 <p className="mt-4 text-center text-red-600">{message}</p>
             )}
+
+            <div className="mt-6 text-center">
+                <Link to="/register" className="text-sm hover:text-indigo-500">
+                    新規登録はこちら
+                </Link>
+            </div>
         </div>
     );
 };
